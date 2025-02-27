@@ -6,12 +6,9 @@ import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { Toast } from 'primereact/toast';
 
-function Edit(id) {
-    const [products, setProducts] = useState();
-    console.log(products)
+function Edit(id, notifyEdit) {
 const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
-  // const {id} = useParams()
 
       const formSubmit = (e) => {
         e.preventDefault();
@@ -21,9 +18,9 @@ const [title, setTitle] = useState('');
             price
           
         })
-        .then((data) => {
-          console.log(data);
-          setProducts(data);
+        .then((res) => {
+          console.log(res);
+          notifyEdit(e, res.data)
         })
       }   
 // Fetch existing product details
@@ -38,18 +35,7 @@ useEffect(() => {
         console.error("Error fetching product:", error);
       });
   }, [id]);
-  
-  //Toast
-  const toast = useRef(null);
-  const toastTopRight = useRef(null);
-  // const showSuccess = () => {
-  //     toast.current.show({severity:'success', summary: 'Success', detail:'Message Content', life: 3000});
-  // } 
-  const showMessage = (event, ref, severity) => {
-    const label = event.target.innerText;
 
-    ref.current.show({ severity: severity, summary: label, detail: label, life: 3000 });
-};
 
   return (
     
@@ -63,23 +49,8 @@ useEffect(() => {
       <Form.Label>Price</Form.Label>
       <Form.Control type="number" placeholder="Enter Price" value={price} onChange={(e) => setPrice(e.target.value)}/>
     </Form.Group>
-    <Toast ref={toastTopRight} position="top-right" />
-    <Button label="Edit Product" severity="success" className="p-button-warning" 
-        onClick={
-          // showSuccess;
-          (e) => {
-            showMessage(e, toastTopRight, 'warn')
-            toast.current.show({severity:'success',
-               summary: 'Success',
-                detail:'Message Content', life: 3000});
-          }
-         
-        }
-          
-          />
-    {/* <Button variant="primary" type="submit">
-      Edit Product
-    </Button> */}
+
+    <Button type='submit' label="Edit Product" severity="success" className="p-button-warning"  />
   </Form>
   )
 }

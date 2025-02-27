@@ -25,8 +25,7 @@ import { Tooltip } from 'primereact/tooltip';
   const Dashboard = () => {
     const [products, setProducts] = useState([]); 
     const [addVisible, setAddVisible] = useState(false);
-    const [editVisible, setEditVisible] = useState(false);
-
+    const [currentProductId, setCurrentProductId] = useState(null)
   
     useEffect(() => {
       getAllProducts();
@@ -162,19 +161,28 @@ const header = renderHeader();
     ref.current.show({ severity: severity, summary: label, detail: label, life: 3000 });
 };
 
-
-
-
-  const notify = (e,product) => {
+  const notifyAdd = (e, product) => {
     showMessage(e, toastTopRight, 'success')
-    toast.current.show({severity:'success', 
-      summary: 'Success', detail:'Message Content', life: 3000})
+    // toast.current.show({severity:'success', 
+    //   summary: 'Success', detail:'Message Content', life: 3000})
       setAddVisible(false);
       product.order = products.length + 1;
       setProducts([...products, product])
   }
 
-
+const notifyEdit = (e, product) => {
+  showMessage(e, toastTopRight, 'success')
+      setCurrentProductId(null)
+      // const oldProduct = products.filter((p) => p.id === product.id )[0];
+      const newProducts = products.map((i) => {
+        if (i.id === product.id) return {...product, order:i.order}
+          else {
+            return i;
+          }
+      })
+      setProducts(newProducts)
+      
+}
     // Function to delete a product
     const deleteProducts = (productId) => {
       swal.fire({
@@ -203,15 +211,16 @@ const header = renderHeader();
         <Link className="btn btn-info mr-2" href={`/uikit/view/${i.id}`}><VisibilityIcon /></Link>
         
         <Button label={ <EditIcon />} style={{width: '45px',
-               height: '37px'}} onClick={() => setEditVisible(true)} />
+               height: '37px'}} onClick={() => setCurrentProductId(i.id)} />
             
-            <Dialog header={Edit(i.id)}  visible={editVisible} onHide={() => {if (!editVisible) return; setEditVisible(false);}}>  
+            <Dialog header={Edit(i.id, notifyEdit)}  visible={currentProductId === i.id} 
+            onHide={() => {setCurrentProductId(null)}}>  
            
             </Dialog>
         </>
       );
   };
-// "pi pi-external-link"
+
       return (
         <div className="main card flex justify-content-center"  style={{position: 'relative'}}>
           <Toast ref={toast} />
@@ -223,13 +232,12 @@ const header = renderHeader();
                () => setAddVisible(true)
             } 
             />
-            <Dialog header={Add(notify)} style={{ width: '50vw' }}
+            <Dialog header={Add(notifyAdd)} style={{ width: '50vw' }}
             visible={addVisible} 
                 onHide={() => {if (!addVisible) return; setAddVisible(false);}} >
               </Dialog>  
               <Tooltip target=".export-buttons>button" position="bottom" />
 
-            
           <div className="grid">
           <div className="flex justify-content-end">
             <IconField iconPosition="left" style={{position: 'relative',paddingLeft: '28px'}}>
@@ -239,33 +247,7 @@ const header = renderHeader();
                     placeholder="Search"/>
             </IconField>
         </div>
-     {/* <Table striped bordered hover style={{marginTop: '50px'}} >
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Operations</th>
-          </tr>
-        </thead>
-        <tbody>
- //.sort((a, b) => a.id > b.id ? 1 : -1) 
-          {products.slice(pagination.from, pagination.to).map((i,index) => (
-  <tr key={i.id}>
-      <td>{(page - 1) * pageSize + 1 + index}</td>
-      <td>{i.title.slice(0,10)} ...</td>
-      <td>{i.price}</td>
-      <td>
-        <Button className="btn btn-danger mr-2" onClick={() => deleteProducts(i.id)}><DeleteIcon /></Button>
-        <Link className="btn btn-info mr-2" href={`/uikit/view/${i.id}`}><VisibilityIcon /></Link>
-        <Link className="btn btn-primary mr-2" href={`/uikit/edit/${i.id}`}><EditIcon /></Link>
-      </td>
-  </tr>
-          ))}
-        
-        
-        </tbody>
-          </Table>    */}
+
           <DataTable 
                     ref={dt} value={products}
                     paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}
@@ -284,7 +266,6 @@ const header = renderHeader();
                 <Column header="Operation" body={links}></Column>
           </DataTable>  
           </div>
-          {/* <Pagination onChange={handlePagination} count={Math.ceil(products.length/pageSize)} color="primary" /> */}
          
           </div>
       );
