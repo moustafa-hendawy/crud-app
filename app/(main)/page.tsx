@@ -1,8 +1,7 @@
  "use client"; 
-import React, {useRef} from 'react';
+ import React, { useRef, useEffect, useState } from 'react';
 import { Table } from "react-bootstrap";
 import Link from 'next/link'
-import { useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -16,8 +15,12 @@ import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
-import Add from './uikit/add/page';
-import Edit from './uikit/edit/[id]/page';
+// import Add from './uikit/add/page';
+// import Edit from './uikit/edit/[id]/page';
+import Add from './uikit/add/page'
+import Edit from './uikit/edit/[id]/page'
+// import Add from '../uikit/add';
+// import Edit from '../uikit/edit';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Tooltip } from 'primereact/tooltip';
@@ -30,21 +33,12 @@ import { Tooltip } from 'primereact/tooltip';
     useEffect(() => {
       getAllProducts();
     }, []);
-// [Pagination]
-//     const pageSize = 5;
-// const [pagination, setPagination] = useState({
-//   from: 0,
-//   to: pageSize
-// })
-// const [page, setPage] = useState(1);
 
-// const handlePagination = (event, page) => {
-//   const from = (page - 1) * pageSize; 
-//   const to = (page - 1) * pageSize + pageSize;
-//   setPagination({...pagination, from, to}); 
-//   setPage(page);
-// }
-
+    const columns = [
+      { header: 'ID', field: 'order' },
+      { header: 'Title', field: 'title' },
+      { header: 'Price', field: 'price' }
+    ];
 // Search
 const [customers, setCustomers] = useState(null);
 const [filters, setFilters] = useState({
@@ -53,7 +47,7 @@ const [filters, setFilters] = useState({
 const [loading, setLoading] = useState(true);
 const [globalFilterValue, setGlobalFilterValue] = useState('');
 
-const onGlobalFilterChange = (e) => {
+const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
   const value = e.target.value;
   let _filters = { ...filters };
 
@@ -65,8 +59,10 @@ const onGlobalFilterChange = (e) => {
 
 const dt = useRef(null);
 
-const exportCSV = (selectionOnly) => {
-  dt.current.exportCSV({ selectionOnly });
+const exportCSV = (selectionOnly: boolean) => {
+  const current = dt.current as any
+  if(current)
+    current.exportCSV({ selectionOnly });
 };
 
 const exportPdf = () => {
@@ -76,14 +72,14 @@ const exportPdf = () => {
 
           doc.autoTable(exportColumns, products);
           doc.save('products.pdf');
-          const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
+          const exportColumns = products.map((col: { header: any; field: any; }) => ({ title: col.header, dataKey: col.field }));
 
           doc.autoTable({
             columns: exportColumns,
             body: products,
           });
 
-          doc.save('products.pdf');
+        
                 });
             });
           };
@@ -103,7 +99,7 @@ const exportExcel = () => {
   });
 };
 
-const saveAsExcelFile = (buffer, fileName) => {
+const saveAsExcelFile = (buffer: BlobPart, fileName: string) => {
   import('file-saver').then((module) => {
       if (module && module.default) {
           let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
@@ -146,7 +142,7 @@ const header = renderHeader();
       console.log(data);
       setProducts(data);
       setLoading(false);
-      data.forEach((product, index) => {
+      data.forEach((product: { order: any; }, index: number) => {
         product.order = index + 1;
       })
     });
@@ -155,13 +151,13 @@ const header = renderHeader();
   const toast = useRef(null);
   const toastTopRight = useRef(null);
     
-  const showMessage = (event, ref, severity) => {
+  const showMessage = (event: { target: { innerText: any; }; }, ref: React.MutableRefObject<null>, severity: string) => {
     const label = event.target.innerText;
 
     ref.current.show({ severity: severity, summary: label, detail: label, life: 3000 });
 };
 
-  const notifyAdd = (e, product) => {
+  const notifyAdd = (e: any, product: { order: number; }) => {
     showMessage(e, toastTopRight, 'success')
     // toast.current.show({severity:'success', 
     //   summary: 'Success', detail:'Message Content', life: 3000})
@@ -170,7 +166,7 @@ const header = renderHeader();
       setProducts([...products, product])
   }
 
-const notifyEdit = (e, product) => {
+const notifyEdit = (e: any, product: { id: any; }) => {
   showMessage(e, toastTopRight, 'success')
       setCurrentProductId(null)
       // const oldProduct = products.filter((p) => p.id === product.id )[0];
@@ -184,7 +180,7 @@ const notifyEdit = (e, product) => {
       
 }
     // Function to delete a product
-    const deleteProducts = (productId) => {
+    const deleteProducts = (productId: any) => {
       swal.fire({
         title: 'Are You Sure To Delete ?',
         showCancelButton: true,
@@ -203,7 +199,7 @@ const notifyEdit = (e, product) => {
       })
 
     }
-    const links = (i) => {
+    const links = (i: { id: React.SetStateAction<null>; }) => {
       return (
         <>
         
