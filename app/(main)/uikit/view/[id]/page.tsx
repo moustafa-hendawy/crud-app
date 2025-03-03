@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from "next/navigation";
 
 function ViewProducts() {
-    const [products, setProducts] = useState();
+    const [products, setProducts] = useState<any>();
     useEffect(() => {
         fetch(`https://fakestoreapi.com/products/${id}`)
         .then((res) => res.json())
