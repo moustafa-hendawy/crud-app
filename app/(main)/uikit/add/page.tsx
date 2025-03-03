@@ -2,19 +2,15 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Button } from 'primereact/button';
 import Form from 'react-bootstrap/Form';
-import { json } from 'stream/consumers';
 import axios from 'axios';
-import { Toast } from 'primereact/toast';
-import { Dialog } from 'primereact/dialog';
 
-function Add(notifyAdd) {
+
+function Add(notifyAdd: any) {
 
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
-  const [products, setProducts] = useState([]); 
-const [loading, setLoading] = useState(true);
  
-const formSubmit = (e) => {
+const formSubmit = (e: any) => {
   e.preventDefault();
  
   axios.post('http://localhost:5000/products', {
@@ -51,3 +47,5 @@ const formSubmit = (e) => {
 }
 
 export default Add
+
+
