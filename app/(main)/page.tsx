@@ -1,16 +1,14 @@
  "use client"; 
  import React, { useRef, useEffect, useState } from 'react';
-import { Table } from "react-bootstrap";
 import Link from 'next/link'
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import swal from 'sweetalert2';
-import Pagination from '@mui/material/Pagination';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode } from 'primereact/api';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { InputText } from 'primereact/inputtext';
@@ -40,7 +38,7 @@ import { Tooltip } from 'primereact/tooltip';
       { header: 'Price', field: 'price' }
     ];
 // Search
-const [customers, setCustomers] = useState(null);
+
 const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -57,29 +55,37 @@ const onGlobalFilterChange = (e: { target: { value: any; }; }) => {
   setGlobalFilterValue(value);
 };
 
-const dt = useRef(null);
+const dt = useRef<DataTable<any[]>>(null);
 
 const exportCSV = (selectionOnly: boolean) => {
-  const current = dt.current as any
-  if(current)
-    current.exportCSV({ selectionOnly });
+  // const current = dt.current as any
+  if(dt.current)
+    dt.current.exportCSV({ selectionOnly });
 };
 
 const exportPdf = () => {
   import('jspdf').then((jsPDF) => {
       import('jspdf-autotable').then(() => {
-          const doc = new jsPDF.default(0, 0);
+          const doc = new jsPDF.default();
 
-          doc.autoTable(exportColumns, products);
-          doc.save('products.pdf');
-          const exportColumns = products.map((col: { header: any; field: any; }) => ({ title: col.header, dataKey: col.field }));
+          // doc.autoTable(exportColumns, products);
+          const autoTable = import("jspdf-autotable").then((autoTable) => {
+            // const exportColumns = ((col: { header: any; field: any; }) => ({ title: col.header, dataKey: col.field }));
+            const defaultAutoTable = autoTable.default;
 
-          doc.autoTable({
-            columns: exportColumns,
-            body: products,
+            defaultAutoTable(doc, {
+              head: [Object.keys(products[0])], // Extract column names dynamically
+              body: products.map((p) => Object.values(p)), // Extract row values dynamically
           });
+          doc.save('products.pdf');
+          });
+       
 
-        
+          // doc.autoTable({
+          //   columns: exportColumns,
+          //   body: products,
+          // });
+
                 });
             });
           };
@@ -100,6 +106,7 @@ const exportExcel = () => {
 };
 
 const saveAsExcelFile = (buffer: BlobPart, fileName: string) => {
+  /* @ts-ignore*/
   import('file-saver').then((module) => {
       if (module && module.default) {
           let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
@@ -148,13 +155,15 @@ const header = renderHeader();
     });
   };
   // Toast
-  const toast = useRef(null);
-  const toastTopRight = useRef(null);
+  const toast = useRef<Toast>(null);
+
+  const toastTopRight = useRef<Toast>(null);
     
-  const showMessage = (event: { target: { innerText: any; }; }, ref: React.MutableRefObject<null>, severity: string) => {
+  const showMessage = (event: { target: { innerText: any; }; },
+     ref: React.RefObject<Toast>, severity: 'success' | 'error') => {
     const label = event.target.innerText;
 
-    ref.current.show({ severity: severity, summary: label, detail: label, life: 3000 });
+    ref.current?.show({ severity: severity, summary: label, detail: label, life: 3000 });
 };
 
   const notifyAdd = (e: any, product: { order: number; }) => {
@@ -163,6 +172,7 @@ const header = renderHeader();
     //   summary: 'Success', detail:'Message Content', life: 3000})
       setAddVisible(false);
       product.order = products.length + 1;
+      /* @ts-ignore*/
       setProducts([...products, product])
   }
 
@@ -171,11 +181,13 @@ const notifyEdit = (e: any, product: { id: any; }) => {
       setCurrentProductId(null)
       // const oldProduct = products.filter((p) => p.id === product.id )[0];
       const newProducts = products.map((i) => {
+        /* @ts-ignore*/
         if (i.id === product.id) return {...product, order:i.order}
           else {
             return i;
           }
       })
+      /* @ts-ignore*/
       setProducts(newProducts)
       
 }
@@ -205,7 +217,7 @@ const notifyEdit = (e: any, product: { id: any; }) => {
         
          <Button className="btn btn-danger mr-2" onClick={() => deleteProducts(i.id)}><DeleteIcon /></Button>
         <Link className="btn btn-info mr-2" href={`/uikit/view/${i.id}`}><VisibilityIcon /></Link>
-        
+        {/* @ts-ignore */}
         <Button label={ <EditIcon />} style={{width: '45px',
                height: '37px'}} onClick={() => setCurrentProductId(i.id)} />
             
@@ -268,3 +280,4 @@ const notifyEdit = (e: any, product: { id: any; }) => {
   };
 
   export default Dashboard;
+
