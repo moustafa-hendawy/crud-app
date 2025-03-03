@@ -6,11 +6,11 @@ import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { Toast } from 'primereact/toast';
 
-function Edit(id, notifyEdit) {
+function Edit(id: any, notifyEdit: any) {
 const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
 
-      const formSubmit = (e) => {
+      const formSubmit = (e: any) => {
         e.preventDefault();
         
         axios.put(`http://localhost:5000/products/${id}`, {
