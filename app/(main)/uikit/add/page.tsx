@@ -1,3 +1,4 @@
+
 "use client"
 import React, { useState, useRef, useEffect } from 'react'
 import { Button } from 'primereact/button';
@@ -18,7 +19,7 @@ const formSubmit = (e: any) => {
       price
     
   })
-  .then((res) => {
+  .then((res: any) => {
 
     console.log(res);
     notifyAdd(e,res.data);
@@ -47,5 +48,3 @@ const formSubmit = (e: any) => {
 }
 
 export default Add
-
-

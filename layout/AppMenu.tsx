@@ -6,9 +6,6 @@ import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
 import { AppMenuItem } from '@/types';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.min.js';
-
 
 const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
@@ -16,9 +13,8 @@ const AppMenu = () => {
     const model: AppMenuItem[] = [
         {
             label: 'Home',
-            items: [{ label: 'Products', icon: 'pi pi-fw pi-home', to: '/' }]
+            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
-
         {
             label: 'UI Components',
             items: [
@@ -177,17 +173,15 @@ const AppMenu = () => {
 
     return (
         <MenuProvider>
-             <ul className="layout-menu">
+            <ul className="layout-menu">
                 {model.map((item, i) => {
                     return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
                 })}
-            
+
                 <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
                     <img alt="Prime Blocks" className="w-full mt-3" src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
                 </Link>
-               
-            </ul>   
-            
+            </ul>
         </MenuProvider>
     );
 };

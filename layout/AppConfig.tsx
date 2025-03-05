@@ -9,6 +9,7 @@ import { classNames } from 'primereact/utils';
 import React, { useContext, useEffect, useState } from 'react';
 import { AppConfigProps, LayoutConfig, LayoutState } from '@/types';
 import { LayoutContext } from './context/layoutcontext';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const AppConfig = (props: AppConfigProps) => {
     const [scales] = useState([12, 13, 14, 15, 16]);

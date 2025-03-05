@@ -8,6 +8,7 @@ import { CSSTransition } from 'react-transition-group';
 import { MenuContext } from './context/menucontext';
 import { AppMenuItemProps } from '@/types';
 import { usePathname, useSearchParams } from 'next/navigation';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const AppMenuitem = (props: AppMenuItemProps) => {
     const pathname = usePathname();

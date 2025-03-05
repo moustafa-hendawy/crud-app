@@ -1,10 +1,10 @@
+
 "use client";
 import React, { useEffect, useRef, useState } from 'react'
 import { Button } from 'primereact/button';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
-import { useParams } from 'next/navigation';
-import { Toast } from 'primereact/toast';
+
 
 function Edit(id: any, notifyEdit: any) {
 const [title, setTitle] = useState('');
