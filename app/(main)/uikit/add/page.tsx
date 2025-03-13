@@ -14,7 +14,7 @@ function Add(notifyAdd: any) {
 const formSubmit = (e: any) => {
   e.preventDefault();
  
-  axios.post('http://localhost:5000/products', {
+  axios.post('https://crud-json-server-ten.vercel.app/products', {
       title,
       price
     

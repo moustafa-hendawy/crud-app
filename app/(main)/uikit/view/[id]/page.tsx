@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 function ViewProducts() {
     const [products, setProducts] = useState<any>();
     useEffect(() => {
-        fetch(`https://fakestoreapi.com/products/${id}`)
+        fetch(`https://crud-json-server-ten.vercel.app/products/${id}`)
         .then((res) => res.json())
         .then((data) =>{
             setProducts(data);

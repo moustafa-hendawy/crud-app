@@ -146,7 +146,7 @@ const header = renderHeader();
 
  // Function to fetch all products
   const getAllProducts = () => {
-   fetch('http://localhost:5000/products')
+   fetch('https://crud-json-server-ten.vercel.app/products')
    .then((res) => res.json())
    .then((data) => {
      console.log(data);
@@ -204,7 +204,7 @@ const notifyEdit = (e: any, product: { id: any; }) => {
      }).then((data) => {
      if (data.isConfirmed) {
          
-          fetch(`http://localhost:5000/products/${productId}`, {
+          fetch(`https://crud-json-server-ten.vercel.app/products/${productId}`, {
        method: 'DELETE'
      }).then((res) => res.json())
        .then(() =>{

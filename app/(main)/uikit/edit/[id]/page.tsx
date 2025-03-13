@@ -13,7 +13,7 @@ const [title, setTitle] = useState('');
       const formSubmit = (e: any) => {
         e.preventDefault();
         
-        axios.put(`http://localhost:5000/products/${id}`, {
+        axios.put(`https://crud-json-server-ten.vercel.app/products/${id}`, {
             title,
             price
           
@@ -26,7 +26,7 @@ const [title, setTitle] = useState('');
 // Fetch existing product details
 useEffect(() => {
     axios
-      .get(`http://localhost:5000/products/${id}`)
+      .get(`https://crud-json-server-ten.vercel.app/products/${id}`)
       .then((response) => {
         setTitle(response.data.title);
         setPrice(response.data.price);
